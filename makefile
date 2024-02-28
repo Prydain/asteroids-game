@@ -12,14 +12,14 @@
 #     the base requirements for your project.
 ###############################################################
 
-
 LFLAGS = -lglut -lGLU -lGL
+CXXFLAGS = -O3 -Wall -Wextra -pedantic-errors
 
 ###############################################################
 # Build the main game
 ###############################################################
-a.out: driver.o game.o uiInteract.o uiDraw.o point.o velocity.o flyingObject.o ship.o bullet.o rocks.o
-	g++ driver.o game.o uiInteract.o uiDraw.o point.o velocity.o flyingObject.o ship.o bullet.o rocks.o $(LFLAGS)
+asteroids: driver.o game.o uiInteract.o uiDraw.o point.o velocity.o flyingObject.o ship.o bullet.o rocks.o
+	$(CXX) -o $@ $^ $(LFLAGS)
 
 ###############################################################
 # Individual files
@@ -33,39 +33,34 @@ a.out: driver.o game.o uiInteract.o uiDraw.o point.o velocity.o flyingObject.o s
 #    bullet.o       The bullets fired from the ship
 #    rocks.o        Contains all of the Rock classes
 ###############################################################
-uiDraw.o: uiDraw.cpp uiDraw.h
-	g++ -c uiDraw.cpp
 
-uiInteract.o: uiInteract.cpp uiInteract.h
-	g++ -c uiInteract.cpp
-
-point.o: point.cpp point.h
-	g++ -c point.cpp
+%.o : %.cpp %.h
+	$(CXX) -o $@ -c $< $(CXXFLAGS)
 
 driver.o: driver.cpp game.h
-	g++ -c driver.cpp
+	$(CXX) -c driver.cpp $(CXXFLAGS)
 
 game.o: game.cpp game.h uiDraw.h uiInteract.h point.h velocity.h flyingObject.h bullet.h rocks.h ship.h
-	g++ -c game.cpp
+	$(CXX) -c game.cpp $(CXXFLAGS)
 
 velocity.o: velocity.cpp velocity.h point.h
-	g++ -c velocity.cpp
+	$(CXX) -c velocity.cpp $(CXXFLAGS)
 
 flyingObject.o: flyingObject.cpp flyingObject.h point.h velocity.h uiDraw.h
-	g++ -c flyingObject.cpp
+	$(CXX) -c flyingObject.cpp $(CXXFLAGS)
 
 ship.o: ship.cpp ship.h flyingObject.h point.h velocity.h uiDraw.h
-	g++ -c ship.cpp
+	$(CXX) -c ship.cpp $(CXXFLAGS)
 
 bullet.o: bullet.cpp bullet.h flyingObject.h point.h velocity.h uiDraw.h
-	g++ -c bullet.cpp
+	$(CXX) -c bullet.cpp $(CXXFLAGS)
 
 rocks.o: rocks.cpp rocks.h flyingObject.h point.h velocity.h uiDraw.h
-	g++ -c rocks.cpp
+	$(CXX) -c rocks.cpp $(CXXFLAGS)
 
 
 ###############################################################
 # General rules
 ###############################################################
 clean:
-	rm a.out *.o
+	rm -f asteroids *.o

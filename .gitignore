@@ -1,0 +1,8 @@
+# exe
+asteroids
+
+# derivates
+*.o
+
+# editor saves
+*~

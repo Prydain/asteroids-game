@@ -329,19 +329,18 @@ void Game :: handleCollisions()
  **************************************************************************/
 void Game :: cleanUpZombies()
 {
-   // check for dead bird
-   for (std::vector <Rock*> :: iterator it = rock.begin(); it != rock.end(); it++)
-   {
-      if ((*it) != NULL && !(*it)->isAlive())
-      {
-         // the asteroid is dead, but the memory is not freed up yet
-         
-         // TODO: Clean up the memory used by the bird
-         delete *it;
-         *it = NULL;
-         rock.erase(it);
-      }
+   // move dead birds and null pointers last
+   auto newend = std::partition(rock.begin(), rock.end(), [](Rock* rock) {
+       return rock && rock->isAlive();
+   });
+
+   // delete deads
+   for(auto it = newend; it != rock.end(); ++it) {
+       if(*it != nullptr) delete *it;
    }
+   // remove the deads from the vector
+   rock.erase(newend, rock.end());
+
 //    // Look for dead bullets
 //    vector<Bullet>::iterator bulletIt = bullets.begin();
 //    while (bulletIt != bullets.end())

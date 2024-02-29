@@ -67,7 +67,7 @@ private:
    Point bottomRight;
    Ship ship;
    
-   std::vector<Bullet*> bullet;
+   std::vector<std::unique_ptr<Bullet>> bullets;
    std::vector<std::unique_ptr<Rock>> rocks;
 
    /*************************************************

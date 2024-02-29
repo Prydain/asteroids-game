@@ -42,7 +42,7 @@ float getClosestDistance(const FlyingObject &obj1, const FlyingObject &obj2)
    dMax = max(dMax, abs(obj2.getVelocity().getDx()));
    dMax = max(dMax, abs(obj2.getVelocity().getDy()));
    dMax = max(dMax, 0.1f); // when dx and dy are 0.0. Go through the loop once.
-   
+
    float distMin = std::numeric_limits<float>::max();
    for (float i = 0.0; i <= dMax; i++)
    {
@@ -50,15 +50,15 @@ float getClosestDistance(const FlyingObject &obj1, const FlyingObject &obj2)
                      obj1.getPoint().getY() + (obj1.getVelocity().getDy() * i / dMax));
       Point point2(obj2.getPoint().getX() + (obj2.getVelocity().getDx() * i / dMax),
                      obj2.getPoint().getY() + (obj2.getVelocity().getDy() * i / dMax));
-      
+
       float xDiff = point1.getX() - point2.getX();
       float yDiff = point1.getY() - point2.getY();
-      
+
       float distSquared = (xDiff * xDiff) +(yDiff * yDiff);
-      
+
       distMin = min(distMin, distSquared);
    }
-   
+
    return sqrt(distMin);
 }
 
@@ -69,7 +69,7 @@ Game :: Game(Point tl, Point br)
  : topLeft(tl), bottomRight(br)
 {
    // Set up the initial conditions of the game
-   // TODO: Set your asteroid pointer to a good initial value (e.g., NULL) 
+   // TODO: Set your asteroid pointer to a good initial value (e.g., NULL)
    for (int i = 0; i < 5; i++)
    {
       rocks.emplace_back(createBigRock());
@@ -98,18 +98,18 @@ void Game :: advance()
 void Game :: advanceBullets()
 {
    // Move each of the bullets forward if it is alive
-   for (std::vector <Bullet*> :: iterator it = bullet.begin(); it != bullet.end(); it++)
+   for (auto it = bullets.begin(); it != bullets.end(); it++)
    {
       if ((*it)->isAlive())
       {
          // this bullet is alive, so tell it to move forward
          (*it)->screenWrap();
-         (*it)->advance(); 
+         (*it)->advance();
 
          if ((*it)->counter() == BULLET_MAX_FRAME_COUNT)
          {
             (*it)->kill();
-         } 
+         }
       }
    }
 }
@@ -161,7 +161,7 @@ void Game::advanceShip()
          ship.screenWrap();
          ship.advance();
       }
-      
+
       // check for crash
       // if (!ground.isAboveGround(ship.getPoint()))
       // {
@@ -176,7 +176,6 @@ void Game::advanceShip()
  **************************************************************************/
 Rock* Game :: createBigRock()
 {
-   Rock * newRock = NULL;
    float angle = random(0, 361);
    // TODO: Fill this in
 
@@ -187,11 +186,11 @@ Rock* Game :: createBigRock()
    point.setY(random(-199, 199));
    velocity.setDx(LARGE_ASTEROID_SPEED * (-cos(M_PI / 180.0 * angle)));
    velocity.setDy(LARGE_ASTEROID_SPEED * (sin(M_PI / 180.0 * angle)));
-   BigRock* bigRock = new BigRock(point, velocity);
-   newRock = new BigRock(point, velocity);
+
+   Rock* newRock = new BigRock(point, velocity);
 
    return newRock;
-} 
+}
 
 
 /**************************************************************************
@@ -200,7 +199,6 @@ Rock* Game :: createBigRock()
  **************************************************************************/
 Rock* Game :: createMediumRock()
 {
-   Rock * newRock = NULL;
    float angle = random(0, 361);
    // TODO: Fill this in
 
@@ -211,11 +209,11 @@ Rock* Game :: createMediumRock()
    point.setY(random(-199, 199));
    velocity.setDx(LARGE_ASTEROID_SPEED * (-cos(M_PI / 180.0 * angle)));
    velocity.setDy(LARGE_ASTEROID_SPEED * (sin(M_PI / 180.0 * angle)));
-   MediumRock* mediumRock = new MediumRock(point, velocity);
-   newRock = new MediumRock(point, velocity);
+
+   Rock* newRock = new MediumRock(point, velocity);
 
    return newRock;
-} 
+}
 
 /**************************************************************************
  * GAME :: CREATE ASTEROID
@@ -223,7 +221,6 @@ Rock* Game :: createMediumRock()
  **************************************************************************/
 Rock* Game :: createSmallRock()
 {
-   Rock * newRock = NULL;
    float angle = random(0, 361);
    // TODO: Fill this in
 
@@ -235,14 +232,15 @@ Rock* Game :: createSmallRock()
    velocity.setDx(LARGE_ASTEROID_SPEED * (-cos(M_PI / 180.0 * angle)));
    velocity.setDy(LARGE_ASTEROID_SPEED * (sin(M_PI / 180.0 * angle)));
    SmallRock* smallRock = new SmallRock(point, velocity);
-   newRock = new SmallRock(point, velocity);
+
+   Rock* newRock = new SmallRock(point, velocity);
 
    return newRock;
-} 
+}
 
 /**************************************************************************
  * GAME :: createBullet()
- * 
+ *
  **************************************************************************/
 Bullet* Game::createBullet()
 {
@@ -253,7 +251,7 @@ Bullet* Game::createBullet()
    Bullet * newBullet = NULL;
    newBullet = new Bullet(ship.getPoint(), bulletVelocity);
 
-   return newBullet;   
+   return newBullet;
 }
 
 /**************************************************************************
@@ -274,19 +272,19 @@ bool Game :: isOnScreen(const Point & point)
  **************************************************************************/
 void Game :: handleCollisions()
 {
-   // create a temp vector to add new rocks 
-   
+   // create a temp vector to add new rocks
+
    // now check for a hit (if it is close enough to any live bullets)
    for (auto itRock = rocks.begin(); itRock != rocks.end(); itRock++)
    {
-      for (std::vector <Bullet*> :: iterator itBullet = bullet.begin(); itBullet != bullet.end(); itBullet++)
+      for (auto itBullet = bullets.begin(); itBullet != bullets.end(); itBullet++)
       {
          if ((*itBullet)->isAlive())
          {
             // this bullet is alive, see if its too close
 
             // check if the flyingobject is at this point (in case it was hit)
-            if ((*itRock) != NULL && (*itRock)->isAlive())
+            if ((*itRock)->isAlive())
             {
 
                if (getClosestDistance(**itBullet, **itRock) < (*itRock)->getRockSize()) // add radius comparison here rocks.getSize)
@@ -299,7 +297,7 @@ void Game :: handleCollisions()
                }
             }
          }
-      } 
+      }
    }
    // add temp vector to rock vector
 }
@@ -321,12 +319,12 @@ void Game :: cleanUpZombies()
 //       // Asteroids Hint:
 //       // If we had a list of pointers, we would need this line instead:
 //       //Bullet* pBullet = *bulletIt;
-      
-//       if (!bullet.isAlive())
+
+//       if (!bullets.isAlive())
 //       {
 //          // If we had a list of pointers, we would need to delete the memory here...
-         
-         
+
+
 //          // remove from list and advance
 //          bulletIt = bullets.erase(bulletIt);
 //       }
@@ -335,7 +333,7 @@ void Game :: cleanUpZombies()
 //          bulletIt++; // advance
 //       }
 //    }
-   
+
 }
 
 /***************************************
@@ -345,7 +343,7 @@ void Game :: cleanUpZombies()
 void Game :: handleInput(const Interface& ui)
 {
    if (ship.isAlive())
-   {  
+   {
       if (ui.isUp())
       {
          ship.isThrust();
@@ -355,13 +353,12 @@ void Game :: handleInput(const Interface& ui)
       {
          ship.isNotThrust();
       }
-      
 
       if (ui.isLeft())
       {
          ship.applyRotationLeft();
       }
-      
+
       if (ui.isRight())
       {
          ship.applyRotationRight();
@@ -369,7 +366,7 @@ void Game :: handleInput(const Interface& ui)
 
       if (ui.isSpace())
       {
-         bullet.emplace_back(createBullet());
+         bullets.emplace_back(createBullet());
       }
    }
 }
@@ -384,16 +381,16 @@ void Game :: draw(const Interface& ui)
 
    // TODO: Check if you have a valid bird and if it's alive
    // then call it's draw method
-   for (auto it = rocks.begin(); it != rocks.end(); it++) 
-   {  
+   for (auto it = rocks.begin(); it != rocks.end(); it++)
+   {
       if ((*it) != NULL && (*it)->isAlive())
       {
          (*it)->draw();
       }
    }
 
-   for (std::vector <Bullet*> :: iterator it = bullet.begin(); it != bullet.end(); it++) 
-   {  
+   for (auto it = bullets.begin(); it != bullets.end(); it++)
+   {
       if ((*it) != NULL && (*it)->isAlive())
       {
          (*it)->draw();
@@ -402,19 +399,19 @@ void Game :: draw(const Interface& ui)
 
    // draw the ship
    ship.draw();
-   
+
    // Put the score on the screen
    /*Point scoreLocation;
    scoreLocation.setX(topLeft.getX() + 5);
    scoreLocation.setY(topLeft.getY() - 5);
-   
+
    drawNumber(scoreLocation, score); */
 
 }
 
 /*********************************************
- * GAME :: 
- * 
+ * GAME ::
+ *
  *********************************************/
 void Game::createShip()
 {
@@ -422,9 +419,9 @@ void Game::createShip()
    Point point;
 
    velocity.setDx(0);
-   velocity.setDy(0);   
+   velocity.setDy(0);
    point.setX(0);
    point.setY(0);
    ship.setVelocity(velocity);
    ship.setPoint(point);
-} 
+}

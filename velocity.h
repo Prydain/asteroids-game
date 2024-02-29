@@ -21,21 +21,30 @@ private:
 
 public:
 // constructor
-   Velocity() : dx(0), dy(0) { }
+   Velocity() : Velocity(0.f, 0.f) {}
    Velocity(float dx, float dy);
 
-// getters
-float getDx() const
-{
-   return dx;
-}
+   float speed_squared() const
+   {
+      return dx*dx + dy*dy;
+   }
 
-float getDy() const
-{
-   return dy;
-}
+   float speed() const;
 
-void setDx(float dx);
-void setDy(float dy);
+   Velocity& nudge();
+
+   // getters
+   float getDx() const
+   {
+      return dx;
+   }
+
+   float getDy() const
+   {
+      return dy;
+   }
+
+   void setDx(float dx);
+   void setDy(float dy);
 };
 #endif // VELOCITY_H

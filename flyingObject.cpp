@@ -71,7 +71,7 @@ void FlyingObject::screenWrap()
  * Function: isAlive()
  * Description: return alive
  *************************************************************/
-bool FlyingObject::isAlive()
+bool FlyingObject::isAlive() const
 {
    return alive;
 }

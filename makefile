@@ -18,7 +18,7 @@ CXXFLAGS = -std=c++20 -O3 -Wall -Wextra -pedantic-errors $(EXTRA)
 ###############################################################
 # Build the main game
 ###############################################################
-asteroids: driver.o game.o uiInteract.o uiDraw.o point.o velocity.o flyingObject.o ship.o bullet.o rocks.o
+asteroids: driver.o game.o uiInteract.o uiDraw.o point.o velocity.o flyingObject.o ship.o bullet.o rocks.o random.o
 	$(CXX) -o $@ $^ $(LFLAGS) $(EXTRA)
 
 ###############################################################

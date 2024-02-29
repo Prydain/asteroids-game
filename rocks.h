@@ -7,6 +7,7 @@
 #ifndef rocks_h
 #define rocks_h
 
+#include <memory>
 #include <vector>
 
 #include "rocks.h"
@@ -34,11 +35,12 @@
 class Rock : public FlyingObject
 {
 public:
-   virtual ~Rock() {}
+   Rock(Point point, Velocity velocity);
+   virtual ~Rock() = default;
    virtual void draw() = 0;
    virtual void hit() = 0;
    virtual int getRockSize() const = 0;
-   //virtual std::vector <Rock*> splitRock() const = 0;
+   virtual std::vector<std::unique_ptr<Rock>> splitRock() const = 0;
 
 protected:
    int rotation;
@@ -53,11 +55,10 @@ class BigRock : public Rock
 {
 public:
    BigRock(Point point, Velocity velocity);
-   ~BigRock() {}
    virtual int getRockSize() const override { return BIG_ROCK_SIZE; }
    virtual void draw();
    virtual void hit();
-   //virtual std::vector <Rock*> splitRock() const override;
+   std::vector<std::unique_ptr<Rock>> splitRock() const override;
 };
 
 //   MediumRock
@@ -69,11 +70,10 @@ class MediumRock : public Rock
 {
 public:
    MediumRock(Point point, Velocity velocity);
-   virtual ~MediumRock() {}
    virtual int getRockSize() const override { return MEDIUM_ROCK_SIZE; }
    virtual void draw();
    virtual void hit();
-   //virtual std::vector <Rock*> splitRock() const override;
+   std::vector<std::unique_ptr<Rock>> splitRock() const override;
 };
 
 // //   SmallRock
@@ -85,11 +85,10 @@ class SmallRock : public Rock
 {
 public:
    SmallRock(Point point, Velocity velocity);
-   virtual ~SmallRock() {}
    virtual int getRockSize() const override { return SMALL_ROCK_SIZE; }
    virtual void draw();
    virtual void hit();
-   //virtual std::vector <Rock*> splitRock() const override;
+   std::vector<std::unique_ptr<Rock>> splitRock() const override;
 };
 
 #endif /* rocks_h */

@@ -273,6 +273,7 @@ bool Game :: isOnScreen(const Point & point)
 void Game :: handleCollisions()
 {
    // create a temp vector to add new rocks
+    std::vector<std::unique_ptr<Rock>> new_rocks;
 
    // now check for a hit (if it is close enough to any live bullets)
    for (auto itRock = rocks.begin(); itRock != rocks.end(); itRock++)
@@ -288,8 +289,10 @@ void Game :: handleCollisions()
             {
 
                if (getClosestDistance(**itBullet, **itRock) < (*itRock)->getRockSize()) // add radius comparison here rocks.getSize)
-               {
-                  //we have a hit!
+               { //we have a hit!
+
+                  auto add_rocks = (*itRock)->splitRock();
+                  new_rocks.insert(new_rocks.end(), std::move_iterator(add_rocks.begin()), std::move_iterator(add_rocks.end()));
                   (*itRock)->hit();
 
                   // the bullet is dead as well
@@ -300,6 +303,7 @@ void Game :: handleCollisions()
       }
    }
    // add temp vector to rock vector
+   rocks.insert(rocks.end(), std::move_iterator(new_rocks.begin()), std::move_iterator(new_rocks.end()));
 }
 
 /**************************************************************************

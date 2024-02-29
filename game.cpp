@@ -6,6 +6,7 @@
  *********************************************************************/
 
 #include "game.h"
+#include <cmath>
 #include <vector>
 
 // These are needed for the getClosestDistance function...
@@ -18,7 +19,6 @@
 #include "bullet.h"
 #include "rocks.h"
 #include "ship.h"
-#include "bullet.h"
 
 #define OFF_SCREEN_BORDER_AMOUNT 5
 #define LARGE_ASTEROID_SPEED     1
@@ -72,28 +72,9 @@ Game :: Game(Point tl, Point br)
    // TODO: Set your asteroid pointer to a good initial value (e.g., NULL) 
    for (int i = 0; i < 5; i++)
    {
-      rock.push_back(createBigRock());
+      rocks.emplace_back(createBigRock());
    }
    createShip();
-}
- 
-/****************************************
- * GAME DESTRUCTOR
- ****************************************/
-Game :: ~Game()
-{
-   // TODO: Check to see if there is currently a asteroid allocated
-   //       and if so, delete it.
-   std::vector <Rock*> :: iterator it = rock.begin();
-   while (it != rock.end())
-   {
-      if ((*it) != NULL)
-      {
-         delete *it;
-         *it = NULL;
-      }
-      rock.erase(it);
-   }
 }
 
 /***************************************
@@ -142,7 +123,7 @@ void Game :: advanceBullets()
  **************************************************************************/
 void Game :: advanceAsteroid()
 {
-   for (std::vector <Rock*> :: iterator it = rock.begin(); it != rock.end(); it++)
+   for (auto it = rocks.begin(); it != rocks.end(); it++)
    {
       if ((*it)->isAlive())
       {
@@ -296,7 +277,7 @@ void Game :: handleCollisions()
    // create a temp vector to add new rocks 
    
    // now check for a hit (if it is close enough to any live bullets)
-   for (std::vector <Rock*> :: iterator itRock = rock.begin(); itRock != rock.end(); itRock++)
+   for (auto itRock = rocks.begin(); itRock != rocks.end(); itRock++)
    {
       for (std::vector <Bullet*> :: iterator itBullet = bullet.begin(); itBullet != bullet.end(); itBullet++)
       {
@@ -308,7 +289,7 @@ void Game :: handleCollisions()
             if ((*itRock) != NULL && (*itRock)->isAlive())
             {
 
-               if (getClosestDistance(**itBullet, **itRock) < (*itRock)->getRockSize()) // add radius comparison here rock.getSize)
+               if (getClosestDistance(**itBullet, **itRock) < (*itRock)->getRockSize()) // add radius comparison here rocks.getSize)
                {
                   //we have a hit!
                   (*itRock)->hit();
@@ -329,14 +310,8 @@ void Game :: handleCollisions()
  **************************************************************************/
 void Game :: cleanUpZombies()
 {
-   // move dead birds and null pointers last
-   std::erase_if(rock, [](Rock* rock) {
-       if(!rock || !rock->isAlive()) {
-           delete rock;
-           return true;
-       }
-       return false;
-   });
+   // erase dead birds
+   std::erase_if(rocks, [](const std::unique_ptr<Rock>& rock) { return !rock->isAlive(); });
 
 //    // Look for dead bullets
 //    vector<Bullet>::iterator bulletIt = bullets.begin();
@@ -367,7 +342,7 @@ void Game :: cleanUpZombies()
  * GAME :: HANDLE INPUT
  * accept input from the user
  ***************************************/
-void Game :: handleInput(const Interface & ui)
+void Game :: handleInput(const Interface& ui)
 {
    if (ship.isAlive())
    {  
@@ -376,7 +351,6 @@ void Game :: handleInput(const Interface & ui)
          ship.isThrust();
          ship.applyThrust();
       }
-
       else
       {
          ship.isNotThrust();
@@ -395,7 +369,7 @@ void Game :: handleInput(const Interface & ui)
 
       if (ui.isSpace())
       {
-         bullet.push_back(createBullet());
+         bullet.emplace_back(createBullet());
       }
    }
 }
@@ -404,13 +378,13 @@ void Game :: handleInput(const Interface & ui)
  * GAME :: DRAW
  * Draw everything on the screen
  *********************************************/
-void Game :: draw(const Interface & ui)
+void Game :: draw(const Interface& ui)
 {
    // draw the bird
 
    // TODO: Check if you have a valid bird and if it's alive
    // then call it's draw method
-   for (std::vector <Rock*> :: iterator it = rock.begin(); it != rock.end(); it++) 
+   for (auto it = rocks.begin(); it != rocks.end(); it++) 
    {  
       if ((*it) != NULL && (*it)->isAlive())
       {

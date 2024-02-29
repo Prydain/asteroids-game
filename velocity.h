@@ -24,13 +24,6 @@ public:
    Velocity() : Velocity(0.f, 0.f) {}
    Velocity(float dx, float dy);
 
-   float speed_squared() const
-   {
-      return dx*dx + dy*dy;
-   }
-
-   float speed() const;
-
    Velocity& nudge();
 
    // getters

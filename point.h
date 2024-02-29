@@ -36,10 +36,33 @@ public:
    void addX(float dx)      { setX(getX() + dx);     }
    void addY(float dy)      { setY(getY() + dy);     }
 
+   float length_squared() const
+   {
+      return x*x + y*y;
+   }
+
+   float length() const;
+
+   Point& operator-=(const Point& rhs)
+   {
+       x -= rhs.x;
+       y -= rhs.y;
+       return *this;
+   }
+
 private:
    float x;           // horizontal position
    float y;           // vertical position
 };
+
+// subtracting two points and getting the length from the resulting
+// points is a way to see how far they are from each other:
+// (p1 - p2).length()  
+inline Point operator-(const Point& lhs, const Point& rhs) {
+    Point retval(lhs);
+    retval -= rhs;
+    return retval;
+}
 
 // stream I/O useful for debugging
 std::ostream & operator << (std::ostream & out, const Point & pt);

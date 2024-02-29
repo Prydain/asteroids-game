@@ -13,7 +13,7 @@
 ###############################################################
 
 LFLAGS = -lglut -lGLU -lGL
-CXXFLAGS = -O3 -Wall -Wextra -pedantic-errors
+CXXFLAGS = -std=c++20 -O3 -Wall -Wextra -pedantic-errors
 
 ###############################################################
 # Build the main game

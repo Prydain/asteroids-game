@@ -330,16 +330,13 @@ void Game :: handleCollisions()
 void Game :: cleanUpZombies()
 {
    // move dead birds and null pointers last
-   auto newend = std::partition(rock.begin(), rock.end(), [](Rock* rock) {
-       return rock && rock->isAlive();
+   std::erase_if(rock, [](Rock* rock) {
+       if(!rock || !rock->isAlive()) {
+           delete rock;
+           return true;
+       }
+       return false;
    });
-
-   // delete deads
-   for(auto it = newend; it != rock.end(); ++it) {
-       if(*it != nullptr) delete *it;
-   }
-   // remove the deads from the vector
-   rock.erase(newend, rock.end());
 
 //    // Look for dead bullets
 //    vector<Bullet>::iterator bulletIt = bullets.begin();

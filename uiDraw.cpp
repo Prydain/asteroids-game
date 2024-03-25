@@ -361,7 +361,7 @@ void drawLanderFlames(const Point & point,
  * RANDOM
  * This function generates a random number.  
  *
- *    INPUT:   min, max : The number of values (min <= num <= max)
+ *    INPUT:   min, max : The number of values (min <= num < max)
  *    OUTPUT   <return> : Return the integer
  ****************************************************************/
 int random(int min, int max)

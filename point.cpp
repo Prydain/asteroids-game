@@ -9,7 +9,9 @@
  ************************************************************************/
 
 #include "point.h"
+
 #include <cassert>
+#include <cmath>
 
 /******************************************
  * POINT : CONSTRUCTOR WITH X,Y
@@ -39,6 +41,10 @@ void Point::setY(float y)
    this->y = y;
 } 
 
+float Point::length() const {
+    return std::sqrt(length_squared());
+}
+
 /******************************************
  * POINT insertion
  *       Display coordinates on the screen
@@ -64,4 +70,3 @@ std::istream & operator >> (std::istream & in, Point & pt)
 
    return in;
 }
-   

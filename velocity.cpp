@@ -8,6 +8,8 @@
 
 #include "velocity.h"
 
+#include "random.h"
+
 /******************************************
  * Velocity(float dx, float dy) 
  * constructor 
@@ -34,4 +36,11 @@ void Velocity::setDx(float dx)
 void Velocity::setDy(float dy)
 {
    this->dy = dy;
+}
+
+Velocity& Velocity::nudge() {
+    std::uniform_real_distribution<float> dist(-1.f, 1.f);
+    dx += dist(prng());
+    dy += dist(prng());
+    return *this;
 }

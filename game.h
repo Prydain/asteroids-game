@@ -14,8 +14,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <memory>
 #include <vector>
-#include <cmath>
 
 #include "uiDraw.h"
 #include "uiInteract.h"
@@ -39,7 +39,7 @@ public:
     * Initializes the game
     *********************************************/
    Game(Point tl, Point br);
-   ~Game();
+   ~Game() = default;
    
    /*********************************************
     * Function: handleInput
@@ -67,9 +67,8 @@ private:
    Point bottomRight;
    Ship ship;
    
-   std::vector <Bullet*> bullet;
-   
-   std::vector<Rock*> rock;
+   std::vector<std::unique_ptr<Bullet>> bullets;
+   std::vector<std::unique_ptr<Rock>> rocks;
 
    /*************************************************
     * Private methods to help with the game logic.

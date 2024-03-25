@@ -18,12 +18,14 @@
 class FlyingObject
 {
 private:
-   Point point;
-   Velocity velocity;
-   bool alive;
+   Point point{};
+   Velocity velocity{};
+   bool alive = true;
 
 public:
-   FlyingObject() : point(0, 0), velocity(0, 0), alive(true) {}
+   FlyingObject() = default;
+   FlyingObject(Point point, Velocity velocity) : point(point), velocity(velocity) {}
+
    Point getPoint()       const   { return point;    }
    Velocity getVelocity() const   { return velocity; }
 
@@ -32,7 +34,7 @@ public:
    void setVelocity(Velocity velocity);
    void kill();
    void advance();
-   bool isAlive();
+   bool isAlive() const;
    void screenWrap();
    //virtual void draw() = 0;
 };

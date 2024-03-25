@@ -13,13 +13,13 @@
 ###############################################################
 
 LFLAGS = -lglut -lGLU -lGL
-CXXFLAGS = -O3 -Wall -Wextra -pedantic-errors
+CXXFLAGS = -std=c++20 -O3 -Wall -Wextra -pedantic-errors $(EXTRA)
 
 ###############################################################
 # Build the main game
 ###############################################################
-asteroids: driver.o game.o uiInteract.o uiDraw.o point.o velocity.o flyingObject.o ship.o bullet.o rocks.o
-	$(CXX) -o $@ $^ $(LFLAGS)
+asteroids: driver.o game.o uiInteract.o uiDraw.o point.o velocity.o flyingObject.o ship.o bullet.o rocks.o random.o
+	$(CXX) -o $@ $^ $(LFLAGS) $(EXTRA)
 
 ###############################################################
 # Individual files
